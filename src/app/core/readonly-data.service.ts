@@ -1,20 +1,23 @@
 import { OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { pluck, switchMap, take, map } from 'rxjs/operators';
-import { RequestBuffer } from './RequestBuffer';
+import { map, switchMap, take } from 'rxjs/operators';
+import { IDataLink } from './IDataLink';
+import { TimedQueue } from './TimedQueue';
 
-export abstract class BufferedReadOnlyDataService implements OnDestroy {
+export class ReadOnlyDataService<TResponseShape> implements OnDestroy {
 
     /**
      * Configure buffer to drain ever 200ms or when buffer reaches 5 items.
      */
-    private _requestBuffer = new RequestBuffer<string>(200, 5);
+    private _requestBuffer = new TimedQueue<string>(200, 5);
 
     private _resolveSubject = new Subject<any>();
     /**
      *
      */
-    constructor() {
+    constructor(
+        private dataLink: IDataLink<TResponseShape>
+    ) {
         this.startWatchingBuffer();
     }
 
@@ -26,7 +29,7 @@ export abstract class BufferedReadOnlyDataService implements OnDestroy {
      */
     private startWatchingBuffer() {
         this._requestBuffer.valueChanges.pipe(
-            switchMap((values) => this._handleGet(values)),
+            switchMap((values) => this.dataLink.resolveData(values)),
         ).subscribe(next => {
            this._resolveSubject.next(next);
        });
@@ -38,7 +41,7 @@ export abstract class BufferedReadOnlyDataService implements OnDestroy {
      * EG: 'sysinfo'
      * @param key key of data to retrieve.
      */
-    get<TResponse>(key: string) {
+    get<TValue>(key: string) {
         // Push the key into the request buffer.
         this._requestBuffer.buffer(key);
 
@@ -46,18 +49,18 @@ export abstract class BufferedReadOnlyDataService implements OnDestroy {
         // resolve the data value for th key
         return this._resolveSubject.pipe(
             take(1),
-            map(getResponse => this._resultSelector(getResponse, key))
-        ) as Observable<TResponse>;
+            map(getResponse => this.dataLink.selectResult(getResponse, key))
+        ) as Observable<TValue>;
     }
 
-    protected abstract _resultSelector<TResponse>(data: any, key: string): TResponse;
+    // protected abstract _resultSelector<TResponse>(data: any, key: string): TResponse;
 
-    /**
-     * Derived class will implement the exact details for how
-     * to retrieve data for the keys.
-     * @param keys - keys to retrieve, will come from the request buffer.
-     */
-    protected abstract _handleGet(keys: string[]): Observable<{[key: string]: any}>;
+    // /**
+    //  * Derived class will implement the exact details for how
+    //  * to retrieve data for the keys.
+    //  * @param keys - keys to retrieve, will come from the request buffer.
+    //  */
+    // protected abstract _handleGet(keys: string[]): Observable<{[key: string]: any}>;
 
     ngOnDestroy() {
         this._resolveSubject.complete();

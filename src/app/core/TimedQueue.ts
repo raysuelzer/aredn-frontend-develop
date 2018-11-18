@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-export class RequestBuffer<T> {
+export class TimedQueue<T> {
     /**
      * Current items in queue.
      */

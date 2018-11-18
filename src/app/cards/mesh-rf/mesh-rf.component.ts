@@ -1,17 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { StatusApiService, StatusPageSections } from '../status-api-servce';
-import { DisposableComponent } from '../DisposableComponent';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
+import { StatusPageSections } from '../../constants';
+import { DisposableComponent } from '../../DisposableComponent';
+import { StatusPageDataService } from '../../status-page-data.service';
 
 @Component({
   selector: 'aredn-mesh-rf',
-  templateUrl: './mesh-rf.component.html',
+  templateUrl: './mesh-rf.component.html'
 })
 export class MeshRfComponent extends DisposableComponent implements OnInit, OnDestroy {
 
   data: ArednApi.MeshRf;
 
-  constructor(private dataService: StatusApiService) {
+  constructor(private dataService: StatusPageDataService) {
     super();
   }
 

@@ -9,11 +9,11 @@ declare namespace ArednApi {
     interface StatusPage {
         meshrf?: MeshRf;
         memory?: Memory;
-        storage: Storage;
-        sysinfo: SysInfo;
-        location: Location;
-        oslr: OSLR;
-        ip: IPAddresses;
+        storage?: Storage;
+        sysinfo?: SysInfo;
+        location?: Location;
+        olsr?: OLSR;
+        ip?: IPAddresses;
     }
 
     interface SysInfo {
@@ -22,21 +22,21 @@ declare namespace ArednApi {
         time: string;
         model: string;
         // TODO: Remove
-        location?: [string, string];
+        location?: Array<any>;
         loads: number[];
         node: string;
-        firmwareversion: string;
+        firmware_version: string;
     }
 
     interface Storage {
-        rootFree: number;
-        tmpFree: number;
+        rootfree: number;
+        tmpfree: number;
     }
 
     interface Memory {
-        freeram: string;
-        sharedram: string;
-        bufferram: string;
+        freeram: number;
+        sharedram: number;
+        bufferram: number;
     }
 
     interface MeshRf {
@@ -49,12 +49,12 @@ declare namespace ArednApi {
     }
 
     interface Location {
-        latitude: string;
-        longitude: string;
+        lat: string;
+        lon: string;
         gridsquare: string;
     }
 
-    interface OSLR {
+    interface OLSR {
         nodes: string;
         entries: string;
     }
