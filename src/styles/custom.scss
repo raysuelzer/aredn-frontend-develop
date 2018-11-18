@@ -1,0 +1,6 @@
+// Add background a bold to a section marked with the heading class
+// class="section heading"
+.card > .section.heading {
+    background: #aabad4;
+    font-weight: bold;
+}
