@@ -1,6 +1,6 @@
 import { OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
+import { map, switchMap, take, mergeMap, filter } from 'rxjs/operators';
 import { IDataLink } from './IDataLink';
 import { TimedQueue } from './TimedQueue';
 
@@ -9,7 +9,7 @@ export class ReadOnlyDataService<TResponseShape> implements OnDestroy {
     /**
      * Configure buffer to drain ever 200ms or when buffer reaches 5 items.
      */
-    private _requestBuffer = new TimedQueue<string>(200, 5);
+    private _requestBuffer = new TimedQueue<string>(100, 7);
 
     private _resolveSubject = new Subject<any>();
     /**
@@ -29,7 +29,7 @@ export class ReadOnlyDataService<TResponseShape> implements OnDestroy {
      */
     private startWatchingBuffer() {
         this._requestBuffer.valueChanges.pipe(
-            switchMap((values) => this.dataLink.resolveData(values)),
+            mergeMap((values) => this.dataLink.resolveData(values)),
         ).subscribe(next => {
            this._resolveSubject.next(next);
        });
@@ -48,8 +48,8 @@ export class ReadOnlyDataService<TResponseShape> implements OnDestroy {
         // return the an observable which will
         // resolve the data value for th key
         return this._resolveSubject.pipe(
-            take(1),
-            map(getResponse => this.dataLink.selectResult(getResponse, key))
+            map(getResponse => this.dataLink.selectResult(getResponse, key)),
+            filter(r => !!r)
         ) as Observable<TValue>;
     }
 

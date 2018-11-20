@@ -13,6 +13,7 @@ import { LocationComponent } from './cards/location/location.component';
 import { PerformanceComponent } from './cards/performance/performance.component';
 import { MemoryAndStorageComponent } from './cards/memory-and-storage/memory-and-storage.component';
 import { HeaderComponent } from './header/header.component';
+import { NodesPageComponent } from './nodes-page/nodes-page.component';
 
 
 
@@ -33,6 +34,7 @@ const CardComponents = [
     AppComponent,
     HeaderComponent,
     StatusPageComponent,
+    NodesPageComponent,
     ...CardComponents
   ],
   imports: [

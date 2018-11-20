@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { NodesPageComponent } from './nodes-page/nodes-page.component';
 import { StatusPageComponent } from './status-page/status-page.component';
-import { AppComponent } from './app.component';
 
 const routes: Routes = [
   {
@@ -15,6 +15,10 @@ const routes: Routes = [
       {
         path: 'status',
         component: StatusPageComponent
+      },
+      {
+        path: 'nodes',
+        component: NodesPageComponent
       }
     ]
   },
